@@ -1,115 +1,172 @@
-# Segundo Parcial
+# Food Store — Sistema de Gestión de Pedidos de Comida
 
-**Tecnicatura Universitaria en Programación — UTN**  
-**Materia:** Programación III  
-**Alumno:** Scaglioni Giuliano
+**Tecnicatura Universitaria en Programación — UTN**
+**Materia:** Programación III
+**Trabajo Final Integrador**
+**Estudiante:** Scaglioni Giuliano
 **Comisión:** 11
-**Link al video:** https://drive.google.com/file/d/18_IIjO0P8c76DK96gW4AWfEBDEbHrWps/view?usp=sharing
+
 ---
 
 ## Descripción del proyecto
 
-Extensión del TP de la Unidad 8 sobre **Java Persistence API (JPA)**. Se agregaron repositorios genéricos y específicos para las entidades `Categoria` y `Producto`, junto con un menú de consola interactivo que permite realizar operaciones ABM (Alta, Baja y Modificación) sobre dichas entidades. Incluye además una consulta JPQL personalizada para filtrar productos por categoría.
+Food Store es un sistema de gestión de pedidos para un negocio de comidas, desarrollado como Trabajo Final Integrador de Programación III. El proyecto está compuesto por dos partes independientes que comparten el mismo dominio:
 
-### Archivos nuevos creados (sin modificar el TP base)
+- **Backend** (este repositorio en `Parcial2/` o raíz del proyecto Java): aplicación de consola en Java con persistencia mediante JPA/Hibernate y base de datos H2 en archivo. Gestiona Categorías, Productos, Usuarios y Pedidos con sus respectivos Detalles.
+- **Frontend** *(en carpeta separada — ver sección Frontend más abajo cuando esté disponible)*: aplicación web en TypeScript + Vite que simula la experiencia de cliente y administrador, consumiendo datos desde archivos JSON estáticos y `localStorage`.
 
-| Archivo | Paquete | Descripción |
-|---|---|---|
-| `JPAUtil.java` | `programacion3.util` | Singleton que provee el `EntityManagerFactory` |
-| `BaseRepository.java` | `programacion3.repository` | Repositorio genérico `<T>` con CRUD: `guardar`, `buscarPorId`, `listarActivos`, `eliminarLogico` |
-| `CategoriaRepository.java` | `programacion3.repository` | Extiende `BaseRepository<Categoria>` |
-| `ProductoRepository.java` | `programacion3.repository` | Extiende `BaseRepository<Producto>` y agrega `buscarPorCategoria` con JPQL |
-| `Main.java` | `programacion3` | Menú principal de consola con submenús de Categorías, Productos y Reportes |
-
-### Funcionalidades implementadas
-
-- **Categorías:** alta, baja lógica, modificación y listado de activas
-- **Productos:** alta con selección de categoría, baja lógica, modificación y listado de activos
-- **Reportes:** consulta JPQL de productos activos filtrados por categoría (`buscarPorCategoria`)
+> **Nota:** backend y frontend son entregables independientes que no se comunican entre sí. El frontend no llama a una API expuesta por este backend; cada uno cumple el mismo backlog de historias de usuario a su manera (consola vs. web).
 
 ---
 
-## Tecnologías utilizadas
+## Backend — Tecnologías utilizadas
 
 - Java 21
-- Gradle
-- Hibernate 6.4.4 (JPA 3.0)
-- H2 Database (archivo local)
+- Gradle (con wrapper incluido)
+- Hibernate ORM 6.4.4 (Jakarta Persistence 3.0)
+- H2 Database (modo archivo)
 - Lombok
 
 ---
 
-## Estructura del proyecto
+## Backend — Modelo de dominio
 
-```
-src/main/java/programacion3/
-├── entities/          ← TP base (minimamente modificado)
-│   ├── Base.java
-│   ├── Categoria.java
-│   ├── Producto.java
-│   └── ...
-├── util/
-│   └── JPAUtil.java   ← NUEVO
-├── repository/
-│   ├── BaseRepository.java      ← NUEVO
-│   ├── CategoriaRepository.java ← NUEVO
-│   └── ProductoRepository.java  ← NUEVO
-└── Main.java          ← NUEVO (reemplaza el main vacío del TP base)
+El modelo se compone de una clase abstracta `Base` (`@MappedSuperclass`, con `id`, `eliminado`, `createdAt`), la interfaz `Calculable`, y cinco entidades: `Categoria`, `Producto`, `Usuario`, `Pedido` y `DetallePedido`.
 
-src/main/resources/META-INF/
-└── persistence.xml    ← TP base (no modificado)
-```
+**Relaciones:**
+- `Producto → Categoria`: asociación unidireccional (`@ManyToOne`). Categoria no mantiene lista de productos.
+- `Pedido → Usuario`: asociación unidireccional (`@ManyToOne`). Usuario no mantiene lista de pedidos.
+- `Pedido ↔ DetallePedido`: composición bidireccional (`@OneToMany(mappedBy="pedido")` / `@ManyToOne`), con cascade `ALL` y `orphanRemoval`. Los `DetallePedido` se crean exclusivamente a través de `Pedido.addDetallePedido()`.
+- `DetallePedido → Producto`: asociación unidireccional (`@ManyToOne`).
+
+Las bajas son siempre lógicas (`eliminado = true`); ningún registro se borra físicamente.
 
 ---
 
-## Instrucciones para ejecutar
+## Backend — Estructura del proyecto
+
+src/main/java/programacion3/
+
+├── entities/
+
+│   ├── Base.java
+
+│   ├── Categoria.java
+
+│   ├── Producto.java
+
+│   ├── Usuario.java
+
+│   ├── Pedido.java
+
+│   └── DetallePedido.java
+
+├── enums/
+
+│   ├── Rol.java
+
+│   ├── Estado.java
+
+│   └── FormaPago.java
+
+├── interfaces/
+
+│   └── Calculable.java
+
+├── repository/
+
+│   ├── Baserepository.java       ← CRUD genérico (persist/merge según id, buscarPorId, listarActivos, eliminarLogico)
+
+│   ├── CategoriaRepository.java
+
+│   ├── ProductoRepository.java   ← + buscarPorCategoria (JPQL)
+
+│   ├── UsuarioRepository.java    ← + buscarPorMail (JPQL)
+
+│   └── PedidoRepository.java     ← + buscarPorUsuario, buscarPorEstado (JPQL)
+
+├── util/
+
+│   └── JPAUtil.java               ← Singleton del EntityManagerFactory
+
+└── Main.java                      ← Menú de consola (Categorías, Productos, Usuarios, Pedidos, Reportes)
+src/main/resources/META-INF/
+
+└── persistence.xml                ← Configuración de H2 en modo archivo
+
+---
+
+## Backend — Funcionalidades implementadas
+
+- **Categorías:** alta, modificación (conservando valores en blanco), baja lógica, listado de activas.
+- **Productos:** alta asociado a categoría, modificación con validación de precio/stock, baja lógica, listado de activos.
+- **Usuarios:** alta con validación de mail único, modificación, baja lógica, listado, búsqueda por mail.
+- **Pedidos:**
+   - Alta transaccional: selección de usuario y forma de pago, carga de múltiples productos con validación de stock y disponibilidad, todo confirmado en una única transacción atómica (rollback completo ante cualquier error).
+   - Cambio de estado (PENDIENTE → CONFIRMADO → TERMINADO / CANCELADO).
+   - Baja lógica (sin restaurar stock).
+   - Listados, filtro por usuario, filtro por estado.
+- **Reportes:** productos por categoría, pedidos por usuario, pedidos por estado, total facturado (suma de pedidos en estado TERMINADO).
+
+---
+
+## Backend — Configuración de la base de datos
+
+La base de datos H2 se ejecuta en **modo archivo** y se crea automáticamente al iniciar la aplicación por primera vez. No requiere instalación ni configuración manual de un servidor de base de datos.
+
+- **Ubicación del archivo:** `./data/jpa_db.mv.db` (relativo a la raíz del proyecto).
+- **Esquema:** gestionado automáticamente por Hibernate (`hibernate.hbm2ddl.auto=update`), por lo que las tablas se crean/actualizan solas según las entidades.
+- **Configuración:** `src/main/resources/META-INF/persistence.xml`.
+- **Para reiniciar la base desde cero:** cerrar la aplicación y eliminar la carpeta `data/` antes de volver a ejecutar.
+
+---
+
+## Backend — Instrucciones para ejecutar
 
 ### Requisitos previos
 
-- **Java 21** instalado y configurado en el `PATH`
-- **Gradle** (o usar el wrapper incluido `./gradlew`)
+- **JDK 21** instalado y configurado.
+- **IntelliJ IDEA** (recomendado) o cualquier IDE con soporte para Gradle y Lombok.
+- Plugin de **Lombok** habilitado en el IDE (con *annotation processing* activado).
 
-### Pasos
+### Pasos (desde IntelliJ IDEA)
 
-1. **Descomprimir** el proyecto en una carpeta local.
+1. Abrir la carpeta del proyecto en IntelliJ (`File → Open`, seleccionar la raíz donde está `build.gradle`).
+2. Esperar a que IntelliJ sincronice Gradle automáticamente (descarga Hibernate, H2 y Lombok).
+3. Verificar que el plugin de Lombok esté instalado y que *Annotation Processing* esté habilitado (`Settings → Build, Execution, Deployment → Compiler → Annotation Processors`).
+4. Ejecutar la clase `programacion3.Main` (botón ▶ junto al método `main`).
+5. Interactuar con el sistema a través del menú de consola.
 
-2. **Abrir una terminal** en la raíz del proyecto (donde está `build.gradle`).
+### Pasos alternativos (línea de comandos, sin IDE)
 
-3. **Compilar el proyecto:**
+```bash
+# Compilar
+./gradlew build        # En Windows: gradlew.bat build
 
-   ```bash
-   ./gradlew build
-   ```
-   En Windows:
-   ```cmd
-   gradlew.bat build
-   ```
+# Ejecutar (ajustar el classpath de dependencias según corresponda)
+java -cp "build/classes/java/main:<ruta-a-las-dependencias>" programacion3.Main
+```
 
-4. **Ejecutar la aplicación:**
+> Nota: el proyecto no incluye el plugin `application` de Gradle, por lo que `./gradlew run` no está disponible; se recomienda ejecutar desde IntelliJ.
 
-   ```bash
-   ./gradlew run
-   ```
-   O bien, si no está configurado el plugin `application`, ejecutar directamente:
-   ```bash
-   java -cp build/libs/*.jar programacion3.Main
-   ```
+---
 
-5. La base de datos H2 se crea automáticamente en `./data/jpa_db.mv.db` al iniciar la aplicación por primera vez.
+## Notas de desarrollo
 
-### Notas
+- Las entidades usan Lombok (`@Data`, `@SuperBuilder`, etc.) para reducir código repetitivo de getters/setters/builders.
+- El repositorio genérico (`Baserepository<T extends Base>`) centraliza el CRUD común; cada repositorio específico solo agrega las consultas JPQL propias de su entidad.
+- El alta de pedido separa la fase de selección (en memoria, sin tocar la base) de la fase de persistencia (una única transacción), evitando dejar datos a medio guardar si el operador cancela o se produce un error.
 
-- La base de datos es **persistente entre ejecuciones** (archivo H2 en `./data/`).
-- Para empezar desde cero, basta con eliminar la carpeta `data/`.
-- Hibernate está configurado con `hbm2ddl.auto=update`, por lo que las tablas se crean o actualizan automáticamente.
-### Dificultades encontradas y resolución
+---
 
-Durante el desarrollo se presentó un problema relacionado con la gestión de relaciones en JPA/Hibernate. Inicialmente se había modelado la relación entre `Categoria` y `Producto` como `ManyToMany`, utilizando una colección con carga diferida (`LAZY`).
+## Frontend
 
-Al intentar asociar productos a una categoría luego de recuperarla desde el repositorio, se producía una excepción `LazyInitializationException`. Tras analizar el comportamiento de Hibernate, se determinó que la causa era el acceso a una colección no inicializada una vez cerrado el `EntityManager`.
+*(Pendiente — se documentará en esta sección una vez incorporado el proyecto TypeScript/Vite)*
 
-Como parte del proceso de revisión del diseño, se reevaluó el modelo de datos y se observó que el dominio del problema no requería una relación `ManyToMany`, ya que cada producto pertenece a una única categoría mientras que una categoría puede contener múltiples productos.
+---
 
-Por este motivo, la relación fue rediseñada utilizando `OneToMany / ManyToOne`, obteniendo un modelo más simple, coherente con el negocio y evitando la necesidad de una tabla intermedia para gestionar las asociaciones.
+## Entrega
 
-Esta situación permitió profundizar en conceptos importantes de JPA como el ciclo de vida de las entidades, las estrategias de carga (`LAZY` y `EAGER`) y el funcionamiento de las relaciones entre entidades.
+- **Código fuente:** este repositorio.
+- **Documentación PDF:** *(pendiente)*
+- **Video demostrativo:** *(pendiente)*

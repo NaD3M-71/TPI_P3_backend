@@ -1,4 +1,4 @@
-package programacion3.enums;
+package com.tpi.jpa.enums;
 
 public enum Rol {
     ADMIN,

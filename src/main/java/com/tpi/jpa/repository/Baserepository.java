@@ -1,9 +1,9 @@
-package programacion3.repository;
+package com.tpi.jpa.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import programacion3.entities.Base;
-import programacion3.util.JPAUtil;
+import com.tpi.jpa.entities.Base;
+import com.tpi.jpa.util.JPAUtil;
 
 import java.util.List;
 import java.util.Optional;

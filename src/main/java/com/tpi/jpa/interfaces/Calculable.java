@@ -1,4 +1,4 @@
-package programacion3.interfaces;
+package com.tpi.jpa.interfaces;
 
 public interface Calculable {
     void calcularTotal();

@@ -134,7 +134,7 @@ La base de datos H2 se ejecuta en **modo archivo** y se crea automáticamente al
 1. Abrir la carpeta del proyecto en IntelliJ (`File → Open`, seleccionar la raíz donde está `build.gradle`).
 2. Esperar a que IntelliJ sincronice Gradle automáticamente (descarga Hibernate, H2 y Lombok).
 3. Verificar que el plugin de Lombok esté instalado y que *Annotation Processing* esté habilitado (`Settings → Build, Execution, Deployment → Compiler → Annotation Processors`).
-4. Ejecutar la clase `programacion3.Main` (botón ▶ junto al método `main`).
+4. Ejecutar la clase `com.tpi.jpa.Main` (botón ▶ junto al método `main`).
 5. Interactuar con el sistema a través del menú de consola.
 
 ### Pasos alternativos (línea de comandos, sin IDE)
@@ -144,7 +144,7 @@ La base de datos H2 se ejecuta en **modo archivo** y se crea automáticamente al
 ./gradlew build        # En Windows: gradlew.bat build
 
 # Ejecutar (ajustar el classpath de dependencias según corresponda)
-java -cp "build/classes/java/main:<ruta-a-las-dependencias>" programacion3.Main
+java -cp "build/classes/java/main:<ruta-a-las-dependencias>" com.tpi.jpa.Main
 ```
 
 > Nota: el proyecto no incluye el plugin `application` de Gradle, por lo que `./gradlew run` no está disponible; se recomienda ejecutar desde IntelliJ.
@@ -168,5 +168,5 @@ java -cp "build/classes/java/main:<ruta-a-las-dependencias>" programacion3.Main
 ## Entrega
 
 - **Código fuente:** este repositorio.
-- **Documentación PDF:** *(pendiente)*
-- **Video demostrativo:** *(pendiente)*
+- **Documentación PDF:** https://drive.google.com/file/d/1HGQ1qUvmgPg_SidLk4W-iFF8WOIj4H8k/view?usp=sharing
+- **Video demostrativo:** https://drive.google.com/file/d/1f5QnESm7NXe1vbNG4SCuAXfWabH5GBWf/view?usp=sharing

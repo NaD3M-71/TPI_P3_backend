@@ -1,6 +1,6 @@
-package programacion3.dtos;
+package com.tpi.jpa.dtos;
 
-import programacion3.entities.Pedido;
+import com.tpi.jpa.entities.Pedido;
 import java.util.Set;
 
 public record UsuarioDTO(

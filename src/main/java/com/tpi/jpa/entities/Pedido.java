@@ -1,11 +1,11 @@
-package programacion3.entities;
+package com.tpi.jpa.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import programacion3.enums.Estado;
-import programacion3.enums.FormaPago;
-import programacion3.interfaces.Calculable;
+import com.tpi.jpa.enums.Estado;
+import com.tpi.jpa.enums.FormaPago;
+import com.tpi.jpa.interfaces.Calculable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

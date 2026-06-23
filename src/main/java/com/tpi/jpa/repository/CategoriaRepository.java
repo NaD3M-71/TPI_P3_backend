@@ -1,6 +1,6 @@
-package programacion3.repository;
+package com.tpi.jpa.repository;
 
-import programacion3.entities.Categoria;
+import com.tpi.jpa.entities.Categoria;
 
 public class CategoriaRepository extends Baserepository<Categoria> {
 

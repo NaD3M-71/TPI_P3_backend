@@ -1,19 +1,19 @@
-package programacion3;
+package com.tpi.jpa;
 
 import jakarta.persistence.EntityManager;
-import programacion3.entities.Categoria;
-import programacion3.entities.DetallePedido;
-import programacion3.entities.Pedido;
-import programacion3.entities.Producto;
-import programacion3.entities.Usuario;
-import programacion3.enums.Estado;
-import programacion3.enums.FormaPago;
-import programacion3.enums.Rol;
-import programacion3.repository.CategoriaRepository;
-import programacion3.repository.PedidoRepository;
-import programacion3.repository.ProductoRepository;
-import programacion3.repository.UsuarioRepository;
-import programacion3.util.JPAUtil;
+import com.tpi.jpa.entities.Categoria;
+import com.tpi.jpa.entities.DetallePedido;
+import com.tpi.jpa.entities.Pedido;
+import com.tpi.jpa.entities.Producto;
+import com.tpi.jpa.entities.Usuario;
+import com.tpi.jpa.enums.Estado;
+import com.tpi.jpa.enums.FormaPago;
+import com.tpi.jpa.enums.Rol;
+import com.tpi.jpa.repository.CategoriaRepository;
+import com.tpi.jpa.repository.PedidoRepository;
+import com.tpi.jpa.repository.ProductoRepository;
+import com.tpi.jpa.repository.UsuarioRepository;
+import com.tpi.jpa.util.JPAUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -1,9 +1,9 @@
-package programacion3.entities;
+package com.tpi.jpa.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
-import programacion3.enums.Rol;
+import com.tpi.jpa.enums.Rol;
 
 
 @Data

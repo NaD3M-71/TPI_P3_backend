@@ -1,8 +1,8 @@
-package programacion3.repository;
+package com.tpi.jpa.repository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-import programacion3.entities.Producto;
+import com.tpi.jpa.entities.Producto;
 
 import java.util.List;
 
